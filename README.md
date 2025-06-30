@@ -20,7 +20,12 @@ And make sure you activate your virtual environment using:
 
 > Windows
 
-    .venv\Scripts\activate
+    .venv\Scripts\activate 
+
+    or
+
+    source .venv/Scripts/activate
+
 
 It should shows `(.venv)` in your terminal to indicate that the virtual environment is active.
 ## Step 3
