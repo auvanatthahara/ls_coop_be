@@ -1,5 +1,28 @@
-from flask import Flask
-from config import Config
+# app.py
 
-app = Flask(__name__)
-app.config.from_object(Config)
+from flask import Flask
+from flask_migrate import Migrate
+
+from config import Config
+from models.user import db
+from routes import register_blueprints
+
+
+def create_app() -> Flask:
+    app = Flask(__name__)
+    app.config.from_object(Config)
+
+    # Initialize extensions
+    db.init_app(app)
+    Migrate(app, db)
+
+    # Register all routes (blueprints)
+    register_blueprints(app)
+
+    return app
+
+
+app = create_app()
+
+if __name__ == "__main__":
+    app.run(debug=True)
