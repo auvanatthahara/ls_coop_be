@@ -1,8 +1,8 @@
-from ast import List
 from flask import Blueprint, request, jsonify, Response
 from typing import Any, Dict
 from models.user import db, User
 from constants import Roles
+from uuid import UUID
 
 user_bp = Blueprint("user_bp", __name__, url_prefix="/api/users")
 
@@ -37,7 +37,33 @@ def create_user() -> tuple[Response, int]:
 
 @user_bp.route("", methods=["GET"])
 def get_all_users() -> tuple[Response, int]:
-    users: List[User] = User.query.all()
-    user_list: List[Dict[str, str]] = [user.to_dict() for user in users]
+    users = db.session.query(User).all()
+    user_list = [user.to_dict() for user in users]
+    print(user_list)
 
     return jsonify({"users": user_list}), 200
+
+
+@user_bp.route("/<uuid:id>", methods=["GET"])
+def get_user(id: UUID) -> tuple[Response, int]:
+    user = db.session.query(User).get(id)
+    print(user)
+
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    return jsonify({"user": user.to_dict()}), 200
+
+
+@user_bp.route("/<uuid:id>", methods=["DELETE"])
+def delete_user(id: UUID) -> tuple[Response, int]:
+    user = User.query.get(id)
+    print(id)
+
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({"message": "User deleted successfully"}), 200
