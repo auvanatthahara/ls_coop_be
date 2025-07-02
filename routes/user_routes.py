@@ -1,5 +1,4 @@
-# routes/user_routes.py
-
+from ast import List
 from flask import Blueprint, request, jsonify, Response
 from typing import Any, Dict
 from models.user import db, User
@@ -34,3 +33,11 @@ def create_user() -> tuple[Response, int]:
         jsonify({"message": "User created successfully", "user": new_user.to_dict()}),
         201,
     )
+
+
+@user_bp.route("", methods=["GET"])
+def get_all_users() -> tuple[Response, int]:
+    users: List[User] = User.query.all()
+    user_list: List[Dict[str, str]] = [user.to_dict() for user in users]
+
+    return jsonify({"users": user_list}), 200

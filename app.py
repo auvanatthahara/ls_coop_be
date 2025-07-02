@@ -1,5 +1,3 @@
-# app.py
-
 from flask import Flask
 from flask_migrate import Migrate
 
@@ -12,11 +10,9 @@ def create_app() -> Flask:
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Initialize extensions
     db.init_app(app)
     Migrate(app, db)
 
-    # Register all routes (blueprints)
     register_blueprints(app)
 
     return app
